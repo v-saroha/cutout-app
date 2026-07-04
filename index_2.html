@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cutout — remove any background, free</title>
+<meta name="description" content="Remove the background from any photo, free, right in your browser. No sign-up, no watermark, no software to install. AI-powered, with a manual touch-up brush for perfect edges.">
+<link rel="canonical" href="https://v-saroha.github.io/cutout-app/">
+<meta name="robots" content="index, follow">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cutout — remove any background, free">
+<meta property="og:description" content="Upload a photo, get the background gone. Free, no sign-up, runs entirely in your browser.">
+<meta property="og:image" content="https://v-saroha.github.io/cutout-app/og-image.png">
+<meta property="og:url" content="https://v-saroha.github.io/cutout-app/">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cutout — remove any background, free">
+<meta name="twitter:description" content="Upload a photo, get the background gone. Free, no sign-up, runs entirely in your browser.">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2312151B'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle'%3E%E2%9C%82%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #12151B;
+    --surface: #1B1F27;
+    --surface-2: #232833;
+    --border: #2A2F3A;
+    --accent: #4FD1C5;
+    --amber: #FFC857;
+    --danger: #FF6B6B;
+    --text: #EDEFF3;
+    --text-muted: #8992A3;
+    --check-a: #1E222B;
+    --check-b: #262C38;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--ink); color: var(--text);
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- Nav ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(18,21,27,0.85); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    transition: box-shadow .2s ease;
+  }
+  nav.scrolled { box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
+  .nav-inner {
+    max-width: 1080px; margin: 0 auto; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo .brand-tag {
+    font-family: 'Inter', sans-serif; font-weight: 500; font-size: 11px;
+    color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--border);
+    padding: 3px 9px; border-radius: 20px; letter-spacing: 0.02em;
+  }
+  .logo .by {
+    font-family: 'Inter', sans-serif; font-weight: 400; font-size: 11px;
+    color: var(--text-muted); margin-left: 2px;
+  }
+  .nav-links { display: flex; gap: 28px; font-size: 14px; color: var(--text-muted); }
+  .nav-links a { text-decoration: none; transition: color .15s ease; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 13.5px;
+    background: var(--accent); color: var(--ink); padding: 9px 18px;
+    border-radius: 8px; text-decoration: none; white-space: nowrap;
+  }
+  .steps .step:nth-child(1), .features .feature:nth-child(1), .pricing-grid .price-card:nth-child(1) { transition-delay: 0s; }
+  .steps .step:nth-child(2), .features .feature:nth-child(2), .pricing-grid .price-card:nth-child(2) { transition-delay: .12s; }
+  .steps .step:nth-child(3), .features .feature:nth-child(3) { transition-delay: .24s; }
+  .features .feature:nth-child(4) { transition-delay: .36s; }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--ink); }
+  ::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 6px; border: 2px solid var(--ink); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+  html { scrollbar-color: var(--surface-2) var(--ink); scrollbar-width: thin; }
+
+  /* Hero entrance */
+  .hero .eyebrow, .hero h1.display, .hero .hero-sub, .hero .hero-cta, .hero .hero-visual {
+    opacity: 0; animation: heroIn .7s ease forwards;
+  }
+  .hero .eyebrow { animation-delay: .05s; }
+  .hero h1.display { animation-delay: .15s; }
+  .hero .hero-sub { animation-delay: .28s; }
+  .hero .hero-cta { animation-delay: .4s; }
+  .hero .hero-visual { animation-delay: .52s; }
+  @keyframes heroIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero .eyebrow, .hero h1.display, .hero .hero-sub, .hero .hero-cta, .hero .hero-visual {
+      opacity: 1; animation: none;
+    }
+  }
+
+  /* Hero visual tilt */
+  .hero-visual { transform-style: preserve-3d; transition: transform .15s ease-out; will-change: transform; }
+
+  /* Step connector line */
+  .steps { position: relative; }
+  .steps::before {
+    content: '';
+    position: absolute; top: 44px; left: 16%; right: 16%; height: 0;
+    border-top: 2px dashed rgba(79,209,197,0.25);
+    z-index: 0;
+  }
+  @media (max-width: 780px) { .steps::before { display: none; } }
+  .step { position: relative; z-index: 1; }
+
+  /* ---------- Hero visual (signature element) ---------- */
+  .hero-visual {
+    max-width: 460px; margin: 44px auto 0; border-radius: 16px; overflow: hidden;
+    border: 1px solid var(--border); position: relative;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.5);
+  }
+  .hero-visual svg { display: block; width: 100%; height: auto; }
+  .hero-visual .divider-line {
+    animation: sweepDivider 5s ease-in-out infinite;
+    transform-origin: center;
+  }
+  @keyframes sweepDivider {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(70px); }
+  }
+
+  /* ---------- Scroll reveal (see full definition near footer) ---------- */
+
+  /* ---------- Card hover depth ---------- */
+  .step, .feature, .price-card {
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .step:hover, .feature:hover {
+    transform: translateY(-4px);
+    border-color: rgba(79,209,197,0.4);
+    box-shadow: 0 16px 32px -16px rgba(0,0,0,0.5);
+  }
+  .price-card:not(.pro):hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -16px rgba(79,209,197,0.25);
+  }
+  .price-card:not(.pro) { border-color: rgba(79,209,197,0.5); position: relative; }
+  .price-card:not(.pro)::before {
+    content: ''; position: absolute; inset: -1px; border-radius: 18px; padding: 1px;
+    background: linear-gradient(135deg, var(--accent), transparent 60%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none; opacity: 0.6;
+  }
+  .faq details { transition: border-color .2s ease; }
+  .faq details:hover { border-color: rgba(79,209,197,0.3); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    text-align: center; padding: 90px 24px 70px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+    width: 640px; height: 640px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(79,209,197,0.10) 0%, transparent 70%);
+    pointer-events: none; animation: drift 9s ease-in-out infinite;
+  }
+  .hero::after {
+    content: ''; position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
+    width: 420px; height: 420px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,200,87,0.07) 0%, transparent 70%);
+    pointer-events: none; animation: drift 11s ease-in-out infinite reverse;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translate(-50%, 0) scale(1); }
+    50% { transform: translate(-52%, 14px) scale(1.06); }
+  }
+  .scissors-float {
+    position: absolute; font-size: 22px; opacity: 0.35; pointer-events: none;
+    animation: floaty 6s ease-in-out infinite;
+  }
+  .scissors-float.s1 { top: 30%; left: 14%; animation-delay: 0s; }
+  .scissors-float.s2 { top: 60%; right: 12%; animation-delay: 2s; font-size: 16px; }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0) rotate(-8deg); }
+    50% { transform: translateY(-14px) rotate(8deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero::before, .hero::after, .scissors-float { animation: none; }
+  }
+  .eyebrow {
+    font-family: 'Space Grotesk', sans-serif; font-size: 12px;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);
+    display: inline-flex; align-items: center; gap: 10px; margin-bottom: 22px;
+    position: relative;
+  }
+  .eyebrow::before {
+    content: ''; width: 7px; height: 7px; background: var(--accent);
+    border-radius: 50%; box-shadow: 0 0 0 4px rgba(79,209,197,0.15);
+  }
+  h1.display {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: clamp(40px, 7vw, 68px); line-height: 1.02; letter-spacing: -0.02em;
+    margin: 0 0 20px; position: relative;
+  }
+  h1.display span { color: var(--accent); }
+  .hero-sub {
+    color: var(--text-muted); font-size: 17px; line-height: 1.6;
+    max-width: 52ch; margin: 0 auto 34px; position: relative;
+  }
+  .hero-cta {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px;
+    background: var(--accent); color: var(--ink); padding: 15px 30px;
+    border-radius: 10px; text-decoration: none; display: inline-block;
+    position: relative; transition: filter .15s ease;
+  }
+  .hero-cta:hover { filter: brightness(1.08); }
+
+  /* ---------- Section shared ---------- */
+  section { padding: 70px 24px; scroll-margin-top: 70px; }
+  .section-head { text-align: center; max-width: 60ch; margin: 0 auto 48px; }
+  .section-head .eyebrow { margin-bottom: 14px; }
+  .section-head h2 {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 32px;
+    margin: 0 0 12px; letter-spacing: -0.01em;
+  }
+  .section-head p { color: var(--text-muted); font-size: 15.5px; line-height: 1.6; margin: 0; }
+
+  /* ---------- Tool card (reused app) ---------- */
+  #tool .tool-inner { max-width: 720px; margin: 0 auto; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 20px; }
+
+  #modelStatus {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--text-muted);
+    padding: 12px 14px; border-radius: 10px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  #modelStatus .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--amber); flex-shrink: 0;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  #modelStatus.ready .dot { background: var(--accent); animation: none; }
+  #modelStatus.error .dot { background: var(--danger); animation: none; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  #dropzone {
+    border: 1.5px dashed var(--border); border-radius: 14px;
+    padding: 56px 24px; text-align: center; cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, opacity .15s ease;
+  }
+  #dropzone:hover, #dropzone.drag { border-color: var(--accent); background: rgba(79,209,197,0.05); }
+  #dropzone.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+  #dropzone .icon {
+    width: 46px; height: 46px; margin: 0 auto 18px; border-radius: 10px;
+    background: conic-gradient(var(--check-a) 0 90deg, var(--check-b) 90deg 180deg, var(--check-a) 180deg 270deg, var(--check-b) 270deg 360deg);
+    background-size: 12px 12px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+  }
+  #dropzone p { margin: 0; font-size: 14.5px; color: var(--text); }
+  #dropzone p.hint { color: var(--text-muted); font-size: 13px; margin-top: 6px; }
+  #fileInput { display: none; }
+
+  #workspace[hidden] { display: none; }
+  .compare-wrap { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); position: relative; }
+  .compare {
+    position: relative; width: 100%;
+    background-image: conic-gradient(var(--check-a) 0 90deg, var(--check-b) 90deg 180deg, var(--check-a) 180deg 270deg, var(--check-b) 270deg 360deg);
+    background-size: 22px 22px; user-select: none; touch-action: none;
+  }
+  .compare canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; }
+  .tag {
+    position: absolute; top: 12px; font-family: 'Space Grotesk', sans-serif; font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 10px; border-radius: 20px;
+    background: rgba(18,21,27,0.72); border: 1px solid var(--border); z-index: 3; pointer-events: none;
+  }
+  .tag.before { left: 12px; }
+  .tag.after { right: 12px; color: var(--accent); }
+  #handle {
+    position: absolute; top: 0; bottom: 0; width: 2px; background: var(--accent);
+    left: 50%; transform: translateX(-1px); cursor: ew-resize; z-index: 4;
+  }
+  #handle::after {
+    content: '✂'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--ink);
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  }
+  #processingOverlay {
+    position: absolute; inset: 0; background: rgba(18,21,27,0.75);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif; font-size: 13px; color: var(--accent);
+    z-index: 5;
+  }
+  #processingOverlay[hidden] { display: none; }
+
+  .controls { margin-top: 22px; display: flex; flex-direction: column; gap: 18px; }
+  .slider-row { display: flex; flex-direction: column; gap: 8px; }
+  .slider-row .label-row {
+    display: flex; justify-content: space-between; font-size: 13px;
+    color: var(--text-muted); font-family: 'Space Grotesk', sans-serif;
+  }
+  .slider-row .label-row span.val { color: var(--accent); }
+  input[type=range] {
+    -webkit-appearance: none; width: 100%; height: 4px; border-radius: 2px;
+    background: var(--surface-2); outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); cursor: pointer; border: 3px solid var(--ink);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  button {
+    font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600;
+    border-radius: 10px; padding: 12px 20px; border: 1px solid var(--border);
+    cursor: pointer; transition: transform .1s ease, filter .15s ease, background .15s ease, color .15s ease;
+    color: var(--text); background: transparent;
+  }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  button:active:not(:disabled) { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: var(--ink); border: none; flex: 1; }
+  .btn-primary:hover:not(:disabled) { filter: brightness(1.08); }
+  .btn-ghost { background: transparent; color: var(--text-muted); }
+  .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
+  .btn-ghost.active { background: var(--accent); color: var(--ink); border-color: var(--accent); }
+
+  #brushPanel {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px; margin-top: 4px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  #brushPanel[hidden] { display: none; }
+  .brush-mode-row { display: flex; gap: 8px; }
+  .brush-mode-row button { flex: 1; padding: 9px 14px; font-size: 13px; }
+  .brush-hint { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .compare.brushing { cursor: none; }
+  #brushCursor {
+    position: absolute; border: 2px solid var(--accent); border-radius: 50%;
+    pointer-events: none; transform: translate(-50%, -50%);
+    z-index: 6; background: rgba(79,209,197,0.12); display: none;
+  }
+  .tool-footnote {
+    margin-top: 24px; font-size: 12.5px; color: var(--text-muted); line-height: 1.6;
+    border-top: 1px solid var(--border); padding-top: 16px;
+  }
+  .tool-footnote b { color: var(--text); }
+
+  /* ---------- How it works ---------- */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 960px; margin: 0 auto; }
+  .step { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 26px; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+  .step:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+  .step .num {
+    font-family: 'Space Grotesk', sans-serif; font-size: 13px; color: var(--accent);
+    letter-spacing: 0.1em; margin-bottom: 14px;
+  }
+  .step h3 { font-family: 'Space Grotesk', sans-serif; font-size: 17px; margin: 0 0 8px; }
+  .step p { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin: 0; }
+  @media (max-width: 780px) { .steps { grid-template-columns: 1fr; } }
+
+  /* ---------- Features ---------- */
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 900px; margin: 0 auto; }
+  .feature {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 24px; display: flex; gap: 16px; align-items: flex-start;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .feature:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+  .feature .icon {
+    width: 40px; height: 40px; border-radius: 10px; background: var(--surface-2);
+    display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+  }
+  .feature h3 { font-family: 'Space Grotesk', sans-serif; font-size: 15.5px; margin: 0 0 6px; }
+  .feature p { color: var(--text-muted); font-size: 13.5px; line-height: 1.55; margin: 0; }
+  @media (max-width: 720px) { .features { grid-template-columns: 1fr; } }
+
+  /* ---------- Pricing ---------- */
+  .pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 760px; margin: 0 auto; }
+  .price-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 30px; transition: transform .2s ease, box-shadow .2s ease; position: relative; overflow: hidden; }
+  .price-card:hover { transform: translateY(-5px); box-shadow: 0 14px 34px rgba(0,0,0,0.28); }
+  .price-card.pro { opacity: 0.7; }
+  .price-card.pro::after {
+    content: 'Soon'; position: absolute; top: 14px; right: -30px; width: 110px; text-align: center;
+    background: var(--amber); color: var(--ink); font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; transform: rotate(35deg);
+    padding: 4px 0;
+  }
+  .price-card .plan-name { font-family: 'Space Grotesk', sans-serif; font-size: 13px; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
+  .price-card .plan-price { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; margin: 12px 0 20px; }
+  .price-card .plan-price span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+  .price-card ul { list-style: none; padding: 0; margin: 0 0 24px; display: flex; flex-direction: column; gap: 10px; }
+  .price-card li { font-size: 13.5px; color: var(--text-muted); display: flex; gap: 8px; }
+  .price-card li::before { content: '✓'; color: var(--accent); flex-shrink: 0; }
+  .price-card.pro li::before { color: var(--text-muted); }
+  .plan-badge {
+    display: inline-block; font-size: 11px; font-family: 'Space Grotesk', sans-serif;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px;
+    padding: 4px 10px; margin-bottom: 10px; color: var(--text-muted);
+  }
+  @media (max-width: 640px) { .pricing-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- FAQ ---------- */
+  .faq { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+  .faq details {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px;
+  }
+  .faq summary {
+    font-family: 'Space Grotesk', sans-serif; font-size: 15px; cursor: pointer;
+    list-style: none; display: flex; justify-content: space-between; align-items: center;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; color: var(--accent); font-size: 20px; }
+  .faq details[open] summary::after { content: '–'; }
+  .faq p { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin: 14px 0 0; }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 32px 24px; text-align: center;
+    font-size: 13px; color: var(--text-muted);
+  }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">✂ Cutout <span class="brand-tag">by AlphaCut</span></div>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a href="#tool" class="nav-cta">Try it free</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <span class="scissors-float s1">✂</span>
+  <span class="scissors-float s2">✂</span>
+  <div class="eyebrow">Free · No sign-up · Runs in your browser</div>
+  <h1 class="display">Cut it <span>out.</span></h1>
+  <p class="hero-sub">Upload any photo. Cutout finds the subject automatically and removes the background — no software to install, no account, no watermark.</p>
+  <a href="#tool" class="hero-cta">Try it free ↓</a>
+
+  <div class="hero-visual">
+    <svg viewBox="0 0 460 300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="leftClip"><rect x="0" y="0" width="230" height="300"/></clipPath>
+        <pattern id="checker" width="20" height="20" patternUnits="userSpaceOnUse">
+          <rect width="20" height="20" fill="#1E222B"/>
+          <rect width="10" height="10" fill="#262C38"/>
+          <rect x="10" y="10" width="10" height="10" fill="#262C38"/>
+        </pattern>
+      </defs>
+      <rect width="460" height="300" fill="url(#checker)"/>
+      <g clip-path="url(#leftClip)">
+        <rect width="230" height="300" fill="#3A4453"/>
+        <ellipse cx="115" cy="120" rx="46" ry="52" fill="#5C6779"/>
+        <path d="M115 172 Q60 185 55 300 L175 300 Q170 185 115 172 Z" fill="#5C6779"/>
+      </g>
+      <ellipse cx="115" cy="120" rx="46" ry="52" fill="#4FD1C5" opacity="0.95"/>
+      <path d="M115 172 Q60 185 55 300 L175 300 Q170 185 115 172 Z" fill="#4FD1C5" opacity="0.95"/>
+      <g class="divider-line">
+        <line x1="230" y1="0" x2="230" y2="300" stroke="#4FD1C5" stroke-width="2.5"/>
+        <circle cx="230" cy="150" r="16" fill="#4FD1C5"/>
+        <text x="230" y="155" font-size="14" text-anchor="middle" fill="#12151B">✂</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section id="tool">
+  <div class="tool-inner">
+    <div class="card">
+      <div id="modelStatus"><div class="dot"></div><span id="modelStatusText">Loading AI model…</span></div>
+
+      <div id="dropzone" class="disabled">
+        <div class="icon">＋</div>
+        <p>Click to upload, or drag a photo here</p>
+        <p class="hint">Works best with a person in the frame · JPG or PNG</p>
+      </div>
+      <input type="file" id="fileInput" accept="image/*">
+
+      <div id="workspace" hidden>
+        <div class="compare-wrap">
+          <div class="compare" id="compare">
+            <canvas id="canvasBefore"></canvas>
+            <canvas id="canvasAfter"></canvas>
+            <div class="tag before">Original</div>
+            <div class="tag after">Cutout</div>
+            <div id="handle"></div>
+            <div id="brushCursor"></div>
+            <div id="processingOverlay" hidden>Analyzing image…</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="slider-row">
+            <div class="label-row"><span>Edge confidence</span><span class="val" id="thresholdVal">0.4</span></div>
+            <input type="range" id="threshold" min="0.1" max="0.95" step="0.05" value="0.4">
+          </div>
+          <div class="slider-row">
+            <div class="label-row"><span>Edge softness</span><span class="val" id="featherVal">3</span></div>
+            <input type="range" id="feather" min="0" max="10" step="1" value="3">
+          </div>
+          <div class="btn-row">
+            <button class="btn-ghost" id="touchUpBtn">🖌 Touch up</button>
+            <button class="btn-primary" id="downloadBtn">Download PNG</button>
+            <button class="btn-ghost" id="resetBtn">Try another image</button>
+          </div>
+
+          <div id="brushPanel" hidden>
+            <div class="slider-row">
+              <div class="label-row"><span>Brush size</span><span class="val" id="brushSizeVal">20</span></div>
+              <input type="range" id="brushSize" min="0" max="100" value="20">
+            </div>
+            <div class="brush-mode-row">
+              <button class="btn-ghost active" id="eraseBtn" type="button">Erase</button>
+              <button class="btn-ghost" id="restoreBtn" type="button">Restore</button>
+            </div>
+            <p class="brush-hint">Erase removes more background. Restore brings back part of the original photo. Drag on the image above to paint.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="tool-footnote"><b>Note:</b> the AI model downloads once (a few MB) and then runs fully in your browser — your photo is never sent to a server.</p>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="section-head reveal">
+    <div class="eyebrow">How it works</div>
+    <h2>Three steps, no learning curve</h2>
+  </div>
+  <div class="steps reveal">
+    <div class="step reveal">
+      <div class="num">01</div>
+      <h3>Upload your photo</h3>
+      <p>Drop in any JPG or PNG. No account, no install — it just works in the tab you're already on.</p>
+    </div>
+    <div class="step reveal">
+      <div class="num">02</div>
+      <h3>AI finds the subject</h3>
+      <p>An on-device model scans the photo and figures out what's foreground versus background — automatically.</p>
+    </div>
+    <div class="step reveal">
+      <div class="num">03</div>
+      <h3>Touch up and download</h3>
+      <p>Fix any rough edges with the brush, then export a clean, transparent PNG.</p>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="section-head reveal">
+    <div class="eyebrow">Why Cutout</div>
+    <h2>Built to be fast, private, and actually free</h2>
+  </div>
+  <div class="features reveal">
+    <div class="feature reveal">
+      <div class="icon">🔒</div>
+      <div><h3>Private by design</h3><p>Your photo is processed on your own device. Nothing gets uploaded to a server.</p></div>
+    </div>
+    <div class="feature reveal">
+      <div class="icon">🖌</div>
+      <div><h3>Manual touch-up brush</h3><p>Erase or restore any part of the cutout by hand, for the spots AI doesn't quite get right.</p></div>
+    </div>
+    <div class="feature reveal">
+      <div class="icon">⚡</div>
+      <div><h3>Instant</h3><p>No upload wait, no processing queue — results appear right in the browser.</p></div>
+    </div>
+    <div class="feature reveal">
+      <div class="icon">💸</div>
+      <div><h3>Free, no watermark</h3><p>No sign-up, no paywall, no logo stamped on your download — free while in early beta.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="section-head reveal">
+    <div class="eyebrow">Pricing</div>
+    <h2>Simple today, more coming</h2>
+    <p>Cutout is free and unlimited right now, while it's in early beta.</p>
+  </div>
+  <div class="pricing-grid reveal">
+    <div class="price-card reveal">
+      <div class="plan-badge">Current plan</div>
+      <div class="plan-name">Free</div>
+      <div class="plan-price">₹0</div>
+      <ul>
+        <li>Unlimited background removal</li>
+        <li>On-device AI, runs in your browser</li>
+        <li>Manual touch-up brush</li>
+        <li>Transparent PNG export</li>
+      </ul>
+    </div>
+    <div class="price-card pro reveal">
+      <div class="plan-badge">Coming soon</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">TBD</div>
+      <ul>
+        <li>Higher-accuracy cloud AI</li>
+        <li>Batch processing, multiple photos at once</li>
+        <li>No file size limits</li>
+        <li>Priority processing</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="section-head reveal">
+    <div class="eyebrow">FAQ</div>
+    <h2>Good to know</h2>
+  </div>
+  <div class="faq reveal">
+    <details open>
+      <summary>Is my photo uploaded anywhere?</summary>
+      <p>No. The AI model runs entirely in your browser using your device's own processing power. Your photo never leaves your computer.</p>
+    </details>
+    <details>
+      <summary>Does it work on every photo?</summary>
+      <p>It works best on photos with a person clearly in frame. Busy backgrounds or unusual poses can trip up the AI — that's what the manual touch-up brush is for.</p>
+    </details>
+    <details>
+      <summary>Do I need to sign up?</summary>
+      <p>No account needed. Just open the page and upload a photo.</p>
+    </details>
+    <details>
+      <summary>Is it really free?</summary>
+      <p>Yes — Cutout is currently free to use while it's in early beta.</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  Cutout — a small tool by <strong>AlphaCut</strong>, built to learn and shared to use.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0"></script>
+<script>
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const workspace = document.getElementById('workspace');
+const compare = document.getElementById('compare');
+const canvasBefore = document.getElementById('canvasBefore');
+const canvasAfter = document.getElementById('canvasAfter');
+const handle = document.getElementById('handle');
+const thresholdInput = document.getElementById('threshold');
+const featherInput = document.getElementById('feather');
+const thresholdVal = document.getElementById('thresholdVal');
+const featherVal = document.getElementById('featherVal');
+const downloadBtn = document.getElementById('downloadBtn');
+const resetBtn = document.getElementById('resetBtn');
+const touchUpBtn = document.getElementById('touchUpBtn');
+const brushPanel = document.getElementById('brushPanel');
+const brushSizeInput = document.getElementById('brushSize');
+const brushSizeVal = document.getElementById('brushSizeVal');
+const eraseBtn = document.getElementById('eraseBtn');
+const restoreBtn = document.getElementById('restoreBtn');
+const brushCursor = document.getElementById('brushCursor');
+const modelStatus = document.getElementById('modelStatus');
+const modelStatusText = document.getElementById('modelStatusText');
+const processingOverlay = document.getElementById('processingOverlay');
+
+let net = null;
+let currentImage = null;
+let currentSegmentation = null;
+let baseMask = null;
+let alphaBuffer = null;
+let manualEditsMade = false;
+let touchUpActive = false;
+let brushAction = 'erase';
+let painting = false;
+const ctxBefore = canvasBefore.getContext('2d');
+const ctxAfter = canvasAfter.getContext('2d');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+const mainNav = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  mainNav.classList.toggle('scrolled', window.scrollY > 12);
+});
+
+const heroVisual = document.querySelector('.hero-visual');
+if (heroVisual) {
+  heroVisual.addEventListener('mousemove', (e) => {
+    const rect = heroVisual.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    heroVisual.style.transform = `perspective(700px) rotateY(${px * 10}deg) rotateX(${-py * 10}deg)`;
+  });
+  heroVisual.addEventListener('mouseleave', () => {
+    heroVisual.style.transform = 'perspective(700px) rotateY(0deg) rotateX(0deg)';
+  });
+}
+
+async function initModel() {
+  try {
+    if (typeof tf === 'undefined' || typeof bodyPix === 'undefined') {
+      throw new Error('Libraries did not load');
+    }
+    try {
+      modelStatusText.textContent = 'Downloading high-accuracy AI model (~45MB)…';
+      net = await bodyPix.load({ architecture: 'ResNet50', outputStride: 16, quantBytes: 1 });
+      modelStatus.classList.add('ready');
+      modelStatusText.textContent = 'High-accuracy AI model ready — upload a photo';
+    } catch (resnetErr) {
+      console.warn('ResNet50 failed, falling back to MobileNet:', resnetErr);
+      modelStatusText.textContent = 'High-accuracy model unavailable, loading backup model…';
+      net = await bodyPix.load({ architecture: 'MobileNetV1', outputStride: 8, multiplier: 1.0, quantBytes: 4 });
+      modelStatus.classList.add('ready');
+      modelStatusText.textContent = 'AI model ready (standard accuracy) — upload a photo';
+    }
+    dropzone.classList.remove('disabled');
+  } catch (err) {
+    modelStatus.classList.add('error');
+    modelStatusText.textContent = 'Model failed to load — tap to retry';
+    modelStatus.style.cursor = 'pointer';
+    modelStatus.addEventListener('click', () => {
+      modelStatus.classList.remove('error');
+      modelStatus.style.cursor = '';
+      initModel();
+    }, { once: true });
+    console.error(err);
+  }
+}
+initModel();
+
+dropzone.addEventListener('click', () => { if (!dropzone.classList.contains('disabled')) fileInput.click(); });
+dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropzone.classList.remove('drag');
+  if (dropzone.classList.contains('disabled')) return;
+  if (e.dataTransfer.files && e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', (e) => {
+  if (e.target.files && e.target.files[0]) loadFile(e.target.files[0]);
+});
+
+function loadFile(file) {
+  if (!file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => setupCanvases(img);
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function setupCanvases(img) {
+  const maxDim = 700;
+  let w = img.naturalWidth, h = img.naturalHeight;
+  const scale = Math.min(1, maxDim / Math.max(w, h));
+  w = Math.round(w * scale); h = Math.round(h * scale);
+
+  canvasBefore.width = w; canvasBefore.height = h;
+  canvasAfter.width = w; canvasAfter.height = h;
+  compare.style.aspectRatio = (w / h).toFixed(4);
+
+  ctxBefore.clearRect(0, 0, w, h);
+  ctxBefore.drawImage(img, 0, 0, w, h);
+  currentImage = ctxBefore;
+
+  dropzone.style.display = 'none';
+  workspace.hidden = false;
+  handle.style.left = '50%';
+  processingOverlay.hidden = false;
+
+  currentSegmentation = await net.segmentPerson(canvasBefore, {
+    internalResolution: 'high',
+    segmentationThreshold: parseFloat(thresholdInput.value)
+  });
+
+  processingOverlay.hidden = true;
+  reprocessFromAI();
+}
+
+function keepLargestBlob(mask, width, height) {
+  const visited = new Uint8Array(mask.length);
+  const labels = new Int32Array(mask.length).fill(-1);
+  const sizes = [];
+  let labelCount = 0;
+  const stack = [];
+
+  for (let idx = 0; idx < mask.length; idx++) {
+    if (mask[idx] && !visited[idx]) {
+      let size = 0;
+      const currentLabel = labelCount++;
+      stack.push(idx);
+      visited[idx] = 1;
+      while (stack.length) {
+        const cur = stack.pop();
+        labels[cur] = currentLabel;
+        size++;
+        const x = cur % width, y = (cur / width) | 0;
+        if (x > 0) { const n = cur - 1; if (mask[n] && !visited[n]) { visited[n] = 1; stack.push(n); } }
+        if (x < width - 1) { const n = cur + 1; if (mask[n] && !visited[n]) { visited[n] = 1; stack.push(n); } }
+        if (y > 0) { const n = cur - width; if (mask[n] && !visited[n]) { visited[n] = 1; stack.push(n); } }
+        if (y < height - 1) { const n = cur + width; if (mask[n] && !visited[n]) { visited[n] = 1; stack.push(n); } }
+      }
+      sizes[currentLabel] = size;
+    }
+  }
+
+  let bestLabel = -1, bestSize = 0;
+  for (let l = 0; l < sizes.length; l++) {
+    if (sizes[l] > bestSize) { bestSize = sizes[l]; bestLabel = l; }
+  }
+
+  const cleaned = new Uint8Array(mask.length);
+  for (let i = 0; i < mask.length; i++) {
+    cleaned[i] = (labels[i] === bestLabel) ? 1 : 0;
+  }
+  return cleaned;
+}
+
+function erodeMask(mask, width, height, iterations) {
+  let current = mask;
+  for (let it = 0; it < iterations; it++) {
+    const next = new Uint8Array(current.length);
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const idx = y * width + x;
+        if (!current[idx]) { next[idx] = 0; continue; }
+        if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
+          next[idx] = 0;
+          continue;
+        }
+        next[idx] = (current[idx - 1] && current[idx + 1] && current[idx - width] && current[idx + width]) ? 1 : 0;
+      }
+    }
+    current = next;
+  }
+  return current;
+}
+
+function computeAlphaFromMask(mask, width, height, feather) {
+  const tmp = document.createElement('canvas');
+  tmp.width = width; tmp.height = height;
+  const tctx = tmp.getContext('2d');
+  const imgData = tctx.createImageData(width, height);
+  for (let i = 0; i < mask.length; i++) {
+    imgData.data[i * 4 + 3] = mask[i] ? 255 : 0;
+  }
+  tctx.putImageData(imgData, 0, 0);
+
+  if (feather > 0) {
+    const tmp2 = document.createElement('canvas');
+    tmp2.width = width; tmp2.height = height;
+    const t2ctx = tmp2.getContext('2d');
+    t2ctx.filter = `blur(${feather * 0.5}px)`;
+    t2ctx.drawImage(tmp, 0, 0);
+    const blurred = t2ctx.getImageData(0, 0, width, height);
+    const alpha = new Uint8ClampedArray(width * height);
+    for (let i = 0; i < alpha.length; i++) alpha[i] = blurred.data[i * 4 + 3];
+    return alpha;
+  }
+  const raw = tctx.getImageData(0, 0, width, height);
+  const alpha = new Uint8ClampedArray(width * height);
+  for (let i = 0; i < alpha.length; i++) alpha[i] = raw.data[i * 4 + 3];
+  return alpha;
+}
+
+function renderFromAlphaBuffer() {
+  if (!alphaBuffer) return;
+  const w = canvasAfter.width, h = canvasAfter.height;
+  const srcData = ctxBefore.getImageData(0, 0, w, h);
+  const out = new Uint8ClampedArray(srcData.data);
+  for (let i = 0; i < alphaBuffer.length; i++) out[i * 4 + 3] = alphaBuffer[i];
+  ctxAfter.clearRect(0, 0, w, h);
+  ctxAfter.putImageData(new ImageData(out, w, h), 0, 0);
+  updateClip();
+}
+
+function reprocessFromAI() {
+  if (!currentSegmentation) return;
+  const { width, height, data: rawMask } = currentSegmentation;
+  const cleaned = keepLargestBlob(rawMask, width, height);
+  baseMask = erodeMask(cleaned, width, height, 3);
+  manualEditsMade = false;
+  const feather = parseInt(featherInput.value, 10);
+  alphaBuffer = computeAlphaFromMask(baseMask, width, height, feather);
+  renderFromAlphaBuffer();
+}
+
+thresholdInput.addEventListener('input', async () => {
+  thresholdVal.textContent = thresholdInput.value;
+  if (!currentImage) return;
+  processingOverlay.hidden = false;
+  currentSegmentation = await net.segmentPerson(canvasBefore, {
+    internalResolution: 'high',
+    segmentationThreshold: parseFloat(thresholdInput.value)
+  });
+  processingOverlay.hidden = true;
+  reprocessFromAI();
+});
+featherInput.addEventListener('input', () => {
+  featherVal.textContent = featherInput.value;
+  if (manualEditsMade || !baseMask) return;
+  const feather = parseInt(featherInput.value, 10);
+  alphaBuffer = computeAlphaFromMask(baseMask, canvasAfter.width, canvasAfter.height, feather);
+  renderFromAlphaBuffer();
+});
+
+let dragging = false;
+handle.addEventListener('pointerdown', () => { if (!touchUpActive) dragging = true; });
+window.addEventListener('pointerup', () => { dragging = false; painting = false; });
+window.addEventListener('pointermove', (e) => {
+  if (touchUpActive) return;
+  if (!dragging) return;
+  const rect = compare.getBoundingClientRect();
+  let pct = ((e.clientX - rect.left) / rect.width) * 100;
+  pct = Math.max(0, Math.min(100, pct));
+  handle.style.left = pct + '%';
+  updateClip();
+});
+function updateClip() {
+  const pct = parseFloat(handle.style.left) || 50;
+  canvasAfter.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+  canvasBefore.style.clipPath = `inset(0 0 0 ${pct}%)`;
+}
+
+touchUpBtn.addEventListener('click', () => {
+  touchUpActive = !touchUpActive;
+  touchUpBtn.classList.toggle('active', touchUpActive);
+  brushPanel.hidden = !touchUpActive;
+  compare.classList.toggle('brushing', touchUpActive);
+  document.querySelectorAll('.tag').forEach(t => t.style.display = touchUpActive ? 'none' : '');
+  if (touchUpActive) {
+    handle.style.display = 'none';
+    canvasAfter.style.clipPath = 'inset(0 0 0 0)';
+    canvasBefore.style.clipPath = 'inset(0 0 0 100%)';
+  } else {
+    handle.style.display = '';
+    brushCursor.style.display = 'none';
+    updateClip();
+  }
+});
+
+eraseBtn.addEventListener('click', () => {
+  brushAction = 'erase';
+  eraseBtn.classList.add('active');
+  restoreBtn.classList.remove('active');
+});
+restoreBtn.addEventListener('click', () => {
+  brushAction = 'restore';
+  restoreBtn.classList.add('active');
+  eraseBtn.classList.remove('active');
+});
+brushSizeInput.addEventListener('input', () => {
+  brushSizeVal.textContent = brushSizeInput.value;
+  updateBrushCursorSize();
+});
+
+function updateBrushCursorSize() {
+  const rect = compare.getBoundingClientRect();
+  const scale = rect.width / (canvasAfter.width || rect.width);
+  const displaySize = parseInt(brushSizeInput.value, 10) * 2 * scale;
+  brushCursor.style.width = displaySize + 'px';
+  brushCursor.style.height = displaySize + 'px';
+}
+
+function paintAt(e) {
+  if (!alphaBuffer) return;
+  const rect = compare.getBoundingClientRect();
+  const scaleX = canvasAfter.width / rect.width;
+  const scaleY = canvasAfter.height / rect.height;
+  const cx = (e.clientX - rect.left) * scaleX;
+  const cy = (e.clientY - rect.top) * scaleY;
+  const r = parseInt(brushSizeInput.value, 10) * ((scaleX + scaleY) / 2);
+  const w = canvasAfter.width, h = canvasAfter.height;
+  const val = brushAction === 'erase' ? 0 : 255;
+
+  const minX = Math.max(0, Math.floor(cx - r)), maxX = Math.min(w - 1, Math.ceil(cx + r));
+  const minY = Math.max(0, Math.floor(cy - r)), maxY = Math.min(h - 1, Math.ceil(cy + r));
+  for (let y = minY; y <= maxY; y++) {
+    for (let x = minX; x <= maxX; x++) {
+      const dx = x - cx, dy = y - cy;
+      if (dx * dx + dy * dy <= r * r) alphaBuffer[y * w + x] = val;
+    }
+  }
+  manualEditsMade = true;
+  renderFromAlphaBuffer();
+}
+
+compare.addEventListener('pointerdown', (e) => {
+  if (!touchUpActive) return;
+  painting = true;
+  paintAt(e);
+});
+compare.addEventListener('pointermove', (e) => {
+  if (!touchUpActive) return;
+  const rect = compare.getBoundingClientRect();
+  brushCursor.style.display = 'block';
+  brushCursor.style.left = (e.clientX - rect.left) + 'px';
+  brushCursor.style.top = (e.clientY - rect.top) + 'px';
+  updateBrushCursorSize();
+  if (painting) paintAt(e);
+});
+compare.addEventListener('pointerleave', () => { brushCursor.style.display = 'none'; });
+
+downloadBtn.addEventListener('click', () => {
+  canvasAfter.toBlob((blob) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'cutout.png'; a.click();
+    URL.revokeObjectURL(url);
+  }, 'image/png');
+});
+
+resetBtn.addEventListener('click', () => {
+  workspace.hidden = true;
+  dropzone.style.display = '';
+  fileInput.value = '';
+  currentImage = null;
+  currentSegmentation = null;
+  baseMask = null;
+  alphaBuffer = null;
+  manualEditsMade = false;
+  if (touchUpActive) touchUpBtn.click();
+});
+</script>
+</body>
+</html>
